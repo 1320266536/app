@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bootdo.app.dao.VcardFloderDao">
+
+    <select id="get" resultType="com.bootdo.app.domain.VcardFloderDO">
+        select `id`, `user_id`, `receoved_user_id`, `create_time`
+        from app_vcard_floder
+        where id = #{value}
+    </select>
+
+    <select id="list" resultType="com.bootdo.app.domain.VcardFloderDO">
+        select `id`,`user_id`,`receoved_user_id`,`create_time` from app_vcard_floder
+        <where>
+            <if test="id != null and id != ''">and id =
+                #{id}
+            </if>
+            <if test="userId != null and userId != ''">and user_id =
+                #{userId}
+            </if>
+            <if test="searchName != null and searchName != '%%'">and
+                user_id in
+                ( select amu.id
+                from app_mobile_user amu where amu.nick_name like #{searchName} or amu.company like #{searchName})
+
+            </if>
+            <if test="receovedUserId != null and receovedUserId != ''">and receoved_user_id =
+                #{receovedUserId}
+            </if>
+            <if test="createTime != null and createTime != ''">and create_time =
+                #{createTime}
+            </if>
+        </where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+            <otherwise>
+                order by id desc
+            </otherwise>
+        </choose>
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <select id="count" resultType="int">
+        select count(*) from app_vcard_floder
+        <where>
+            <if test="id != null and id != ''">and id =
+                #{id}
+            </if>
+            <if test="userId != null and userId != ''">and user_id =
+                #{userId}
+            </if>
+            <if test="receovedUserId != null and receovedUserId != ''">and receoved_user_id =
+                #{receovedUserId}
+            </if>
+            <if test="createTime != null and createTime != ''">and create_time =
+                #{createTime}
+            </if>
+        </where>
+    </select>
+
+    <insert id="save" parameterType="com.bootdo.app.domain.VcardFloderDO">
+        insert into app_vcard_floder
+        (`id`,
+         `user_id`,
+         `receoved_user_id`,
+         `create_time`)
+        values (#{id},
+                #{userId},
+                #{receovedUserId},
+                #{createTime})
+    </insert>
+
+    <update id="update" parameterType="com.bootdo.app.domain.VcardFloderDO">
+        update app_vcard_floder
+        <set>
+            <if test="userId != null">`user_id` = #{userId},</if>
+            <if test="receovedUserId != null">`receoved_user_id` = #{receovedUserId},</if>
+            <if test="createTime != null">`create_time` = #{createTime}</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="remove">
+        delete
+        from app_vcard_floder
+        where id = #{value}
+    </delete>
+
+    <delete id="batchRemove">
+        delete from app_vcard_floder where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

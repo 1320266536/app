@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content ">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content">
+                    <form class="form-horizontal m-t" id="signupForm">
+                        <input type="hidden" th:value="${id}" name="id" id="id">
+                        <input type="hidden" name="status" value="2">
+                        <table style="margin-left: 104px">
+                            <tr>
+                                <td>
+                                    <div class="radio">
+                                    <label>
+                                        <input type="radio" name="remarks" checked  value="低俗色情">低俗色情
+                                    </label>
+                                    </div>
+                                </td>
+                                <td class="col-sm-7">&nbsp;</td>
+                                <td>
+                                    <div class="radio">
+                                    <label>
+                                        <input type="radio" name="remarks" checked  value="暴力血腥">暴力血腥
+                                    </label>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="radio">
+                                    <label>
+                                        <input type="radio" name="remarks" checked  value="售卖假货">售卖假货
+                                    </label>
+                                    </div>
+                                </td>
+                                <td class="col-sm-7">&nbsp;</td>
+                                <td>
+                                    <div class="radio">
+                                    <label>
+                                        <input type="radio" name="remarks" checked  value="政治敏感">政治敏感
+                                    </label>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="radio">
+                                    <label>
+                                        <input type="radio" name="remarks" checked  value="违法犯罪">违法犯罪
+                                    </label>
+                                    </div>
+                                </td>
+                                <td class="col-sm-7">&nbsp;</td>
+                                <td>
+                                    <div class="radio">
+                                    <label>
+                                        <input type="radio" name="remarks" checked  value="垃圾广告">垃圾广告
+                                    </label>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="radio">
+                                    <label>
+                                        <input type="radio" name="remarks" checked  value="造谣传谣">造谣传谣
+                                    </label>
+                                    </div>
+                                </td>
+                                <td class="col-sm-7">&nbsp;</td>
+                                <td>
+                                    <div class="radio">
+                                    <label>
+                                        <input type="radio" name="remarks" checked  value="侮辱谩骂">侮辱谩骂
+                                    </label>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="radio">
+                                    <label>
+                                        <input type="radio" name="remarks" checked  value="涉嫌侵权">涉嫌侵权
+                                    </label>
+                                    </div>
+                                </td>
+                                <td class="col-sm-7">&nbsp;</td>
+                                <td>
+                                    <div class="radio">
+                                    <label>
+                                        <input type="radio" name="remarks" checked  value="少儿不宜">少儿不宜
+                                    </label>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <br>
+                        <br>
+                        <div class="form-group" style="margin-left: 152px">
+                            <div class="col-sm-8 col-sm-offset-3">
+                                <button type="button" onclick="save()" class="btn btn-primary">提交</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:include="include::footer"></div>
+<script type="text/javascript" src="/js/appjs/app/video/shelvesVideos.js">
+</script>
+</body>
+</html>

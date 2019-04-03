@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bootdo.app.dao.MeetingDao">
+
+    <select id="get" resultType="com.bootdo.app.domain.MeetingDO">
+        select `id`, `name`, `content`, `mt_time`, `adress`, `coordinates`, qr_code
+        from app_meeting
+        where id = #{value}
+    </select>
+
+    <select id="myMeetList" resultType="com.bootdo.app.domain.MeetingDO">
+        select id,
+               name,
+               content,
+               mt_time,
+               adress,
+               (select count(1) from app_join_meeting ajm2 where ajm2.mt_id = am.id) join_count
+        from app_meeting am
+        where am.id in
+              (select ajm.mt_id from app_join_meeting ajm where ajm.user_id = #{userId});
+    </select>
+    <select id="list" resultType="com.bootdo.app.domain.MeetingDO">
+        select `id`,`name`,`content`,`mt_time`,`adress`,`coordinates`,qr_code from app_meeting
+        <where>
+            <if test="id != null and id != ''">and id =
+                #{id}
+            </if>
+            <if test="name != null and name != '' and name != '%%'">
+                and name like #{name}
+            </if>
+            <if test="content != null and content != ''">and content =
+                #{content}
+            </if>
+            <if test="mtTime != null and mtTime != ''">and mt_time =
+                #{mtTime}
+            </if>
+            <if test="adress != null and adress != ''">and adress =
+                #{adress}
+            </if>
+            <if test="coordinates != null and coordinates != ''">and coordinates =
+                #{coordinates}
+            </if>
+        </where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+            <otherwise>
+                order by id desc
+            </otherwise>
+        </choose>
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <select id="count" resultType="int">
+        select count(*) from app_meeting
+        <where>
+            <if test="id != null and id != ''">and id =
+                #{id}
+            </if>
+            <if test="name != null and name != '' and name != '%%'">
+                and name like #{name}
+            </if>
+            <if test="content != null and content != ''">and content =
+                #{content}
+            </if>
+            <if test="mtTime != null and mtTime != ''">and mt_time =
+                #{mtTime}
+            </if>
+            <if test="adress != null and adress != ''">and adress =
+                #{adress}
+            </if>
+            <if test="coordinates != null and coordinates != ''">and coordinates =
+                #{coordinates}
+            </if>
+        </where>
+    </select>
+
+    <insert id="save" parameterType="com.bootdo.app.domain.MeetingDO" useGeneratedKeys="true" keyProperty="id">
+        insert into app_meeting
+        (`name`,
+         `content`,
+         `mt_time`,
+         `adress`,
+         `coordinates`, qr_code)
+        values (#{name},
+                #{content},
+                #{mtTime},
+                #{adress},
+                #{coordinates}, #{qrCode})
+    </insert>
+
+    <update id="update" parameterType="com.bootdo.app.domain.MeetingDO">
+        update app_meeting
+        <set>
+            <if test="name != null">`name` = #{name},</if>
+            <if test="content != null">`content` = #{content},</if>
+            <if test="qrCode != null">`qr_code` = #{qrCode},</if>
+            <if test="mtTime != null">`mt_time` = #{mtTime},</if>
+            <if test="adress != null">`adress` = #{adress},</if>
+            <if test="coordinates != null">`coordinates` = #{coordinates}</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="remove">
+        delete
+        from app_meeting
+        where id = #{value}
+    </delete>
+
+    <delete id="batchRemove">
+        delete from app_meeting where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

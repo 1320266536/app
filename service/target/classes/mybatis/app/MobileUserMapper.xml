@@ -1,0 +1,454 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bootdo.app.dao.MobileUserDao">
+
+    <select id="get" resultType="com.bootdo.app.domain.MobileUserDO">
+        select `id`,
+               `head_img`,
+               `nick_name`,
+               `sex`,
+               `phone`,
+               `password`,
+               `company`,
+               `positions`,
+               `industry`,
+               `mail`,
+               `create_date`,
+               `business_card`,
+               `user_name`,
+               `id_card_num`,
+               `id_card_positive`,
+               `id_card_reverse`,
+               `real_flag`,
+               `status`,
+               `im_code`,
+               `open_id`,
+               user_from,
+               lon,
+               lat,
+               (select count(1) from app_care_me acm where acm.care_user_id = amu.id)          fans_count,
+               (select count(1) from app_video av where av.user_id = amu.id)                   video_count,
+               (select sum(av2.praises) from app_video av2 where av2.user_id = amu.id)         praises_count,
+               (select count(1) from app_vcard_floder avf where avf.receoved_user_id = amu.id) vc_card_count,
+               (select count(1) from app_care_me acm where acm.user_id =amu.id) care_count,
+               age,
+               hand_up_id_card,
+               user_sign,
+               birthday,
+               constellation
+        from app_mobile_user amu
+        where id = #{value}
+
+    </select>
+
+    <select id="list" resultType="com.bootdo.app.domain.MobileUserDO">
+        select user_from,
+        `id`,`head_img`,`nick_name`,`sex`,`phone`,`password`,`company`,`positions`,`industry`,`mail`,`create_date`,`business_card`,`user_name`,`id_card_num`,`id_card_positive`,`id_card_reverse`,`real_flag`,`status`,`im_code`,`open_id`,lon,lat,
+        (select count(1) from app_care_me acm where acm.care_user_id = amu.id) fans_count,
+        (select count(1) from app_video av where av.user_id=amu.id) video_count,
+        (select sum(av2.praises) from app_video av2 where av2.user_id=amu.id ) praises_count,
+        (select count(1) from app_vcard_floder avf where avf.receoved_user_id=amu.id) vc_card_count,
+        (select count(1) from app_care_me acm where acm.user_id=amu.id) care_count,
+        age,
+        hand_up_id_card,
+        logo,
+        address,
+        user_sign,
+        birthday,
+        constellation
+        from app_mobile_user amu
+        <where>
+            <if test="id != null and id != ''">and id =
+                #{id}
+            </if>
+            <if test="userFrom != null and userFrom != ''">and user_from =
+                #{userFrom}
+            </if>
+            <if test="headImg != null and headImg != ''">and head_img =
+                #{headImg}
+            </if>
+            <if test="nickName != null and nickName != '' and nickName != '%%'">
+                and nick_name like #{nickName}
+            </if>
+            <if test="sex != null and sex != ''">and sex =
+                #{sex}
+            </if>
+            <if test="phone != null and phone != ''">and phone =
+                #{phone}
+            </if>
+            <if test="password != null and password != ''">and password =
+                #{password}
+            </if>
+            <if test="company != null and company != ''">and company =
+                #{company}
+            </if>
+            <if test="positions != null and positions != ''">and positions =
+                #{positions}
+            </if>
+            <if test="industry != null and industry != ''">and industry =
+                #{industry}
+            </if>
+            <if test="mail != null and mail != ''">and mail =
+                #{mail}
+            </if>
+            <if test="createDate != null and createDate != ''">and create_date =
+                #{createDate}
+            </if>
+            <if test="businessCard != null and businessCard != ''">and business_card =
+                #{businessCard}
+            </if>
+            <if test="userName != null and userName != '' and userName != '%%'">
+                and user_name like #{userName}
+            </if>
+            <if test="idCardNum != null and idCardNum != ''">and id_card_num =
+                #{idCardNum}
+            </if>
+            <if test="idCardPositive != null and idCardPositive != ''">and id_card_positive =
+                #{idCardPositive}
+            </if>
+            <if test="idCardReverse != null and idCardReverse != ''">and id_card_reverse =
+                #{idCardReverse}
+            </if>
+            <if test="realFlag != null and realFlag != ''">and real_flag =
+                #{realFlag}
+            </if>
+            <if test="status != null and status != ''">and status =
+                #{status}
+            </if>
+            <if test="imCode != null and imCode != ''">and im_code =
+                #{imCode}
+            </if>
+            <if test="openId != null and openId != ''">and open_id =
+                #{openId}
+            </if>
+        </where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+            <otherwise>
+                order by id desc
+            </otherwise>
+        </choose>
+        <if test="offset != null and limit != null">nearByMe
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <select id="count" resultType="int">
+        select count(*) from app_mobile_user
+        <where>
+
+            <if test="userFrom != null and userFrom != ''">and user_from =
+                #{userFrom}
+            </if>
+            <if test="id != null and id != ''">and id =
+                #{id}
+            </if>
+            <if test="headImg != null and headImg != ''">and head_img =
+                #{headImg}
+            </if>
+            <if test="nickName != null and nickName != '' and nickName != '%%'">
+                and nick_name like #{nickName}
+            </if>
+            <if test="sex != null and sex != ''">and sex =
+                #{sex}
+            </if>
+            <if test="phone != null and phone != ''">and phone =
+                #{phone}
+            </if>
+            <if test="password != null and password != ''">and password =
+                #{password}
+            </if>
+            <if test="company != null and company != ''">and company =
+                #{company}
+            </if>
+            <if test="positions != null and positions != ''">and positions =
+                #{positions}
+            </if>
+            <if test="industry != null and industry != ''">and industry =
+                #{industry}
+            </if>
+            <if test="mail != null and mail != ''">and mail =
+                #{mail}
+            </if>
+            <if test="createDate != null and createDate != ''">and create_date =
+                #{createDate}
+            </if>
+            <if test="businessCard != null and businessCard != ''">and business_card =
+                #{businessCard}
+            </if>
+            <if test="userName != null and userName != '' and userName != '%%'">
+                and user_name like #{userName}
+            </if>
+            <if test="idCardNum != null and idCardNum != ''">and id_card_num =
+                #{idCardNum}
+            </if>
+            <if test="idCardPositive != null and idCardPositive != ''">and id_card_positive =
+                #{idCardPositive}
+            </if>
+            <if test="idCardReverse != null and idCardReverse != ''">and id_card_reverse =
+                #{idCardReverse}
+            </if>
+            <if test="realFlag != null and realFlag != ''">and real_flag =
+                #{realFlag}
+            </if>
+            <if test="status != null and status != ''">and status =
+                #{status}
+            </if>
+            <if test="imCode != null and imCode != ''">and im_code =
+                #{imCode}
+            </if>
+            <if test="openId != null and openId != ''">and open_id =
+                #{openId}
+            </if>
+        </where>
+    </select>
+
+    <insert id="save" parameterType="com.bootdo.app.domain.MobileUserDO" useGeneratedKeys="true" keyProperty="id">
+        insert into app_mobile_user
+        (`head_img`,
+         `nick_name`,
+         `sex`,
+         `phone`,
+         `password`,
+         `company`,
+         `positions`,
+         `industry`,
+         `mail`,
+         `create_date`,
+         `business_card`,
+         `user_name`,
+         `id_card_num`,
+         `id_card_positive`,
+         `id_card_reverse`,
+         `real_flag`,
+         `status`,
+         `im_code`,
+         `open_id`,
+         user_from,
+         lon,
+         lat,
+         age,
+         hand_up_id_card,
+         logo,
+         address,
+         user_sign,
+         birthday,
+         constellation)
+        values (#{headImg},
+                #{nickName},
+                #{sex},
+                #{phone},
+                #{password},
+                #{company},
+                #{positions},
+                #{industry},
+                #{mail},
+                #{createDate},
+                #{businessCard},
+                #{userName},
+                #{idCardNum},
+                #{idCardPositive},
+                #{idCardReverse},
+                #{realFlag},
+                #{status},
+                #{imCode},
+                #{openId},
+                #{userFrom},
+                #{lon},
+                #{lat},
+                #{age},
+                #{handUpIdCard},
+                #{logo},
+                #{address},
+                #{userSign},
+                #{birthday},
+                #{constellation})
+
+    </insert>
+
+    <update id="update" parameterType="com.bootdo.app.domain.MobileUserDO">
+        update app_mobile_user
+        <set>
+            <if test="headImg != null">`head_img` = #{headImg},</if>
+            <if test="userFrom != null">`user_from` = #{userFrom},</if>
+            <if test="birthday != null">`birthday` = #{birthday},</if>
+            <if test="constellation != null">`constellation` = #{constellation},</if>
+            <if test="userSign != null">`user_sign` = #{userSign},</if>
+            <if test="address != null">`address` = #{address},</if>
+            <if test="logo != null">`logo` = #{logo},</if>
+            <if test="age != null">`age` = #{age},</if>
+            <if test="handUpIdCard != null">`hand_up_id_card` = #{handUpIdCard},</if>
+            <if test="lon != null">`lon` = #{lon},</if>
+            <if test="lat != null">`lat` = #{lat},</if>
+            <if test="nickName != null">`nick_name` = #{nickName},</if>
+            <if test="sex != null">`sex` = #{sex},</if>
+            <if test="phone != null">`phone` = #{phone},</if>
+            <if test="password != null">`password` = #{password},</if>
+            <if test="company != null">`company` = #{company},</if>
+            <if test="positions != null">`positions` = #{positions},</if>
+            <if test="industry != null">`industry` = #{industry},</if>
+            <if test="mail != null">`mail` = #{mail},</if>
+            <if test="createDate != null">`create_date` = #{createDate},</if>
+            <if test="businessCard != null">`business_card` = #{businessCard},</if>
+            <if test="userName != null">`user_name` = #{userName},</if>
+            <if test="idCardNum != null">`id_card_num` = #{idCardNum},</if>
+            <if test="idCardPositive != null">`id_card_positive` = #{idCardPositive},</if>
+            <if test="idCardReverse != null">`id_card_reverse` = #{idCardReverse},</if>
+            <if test="realFlag != null">`real_flag` = #{realFlag},</if>
+            <if test="status != null">`status` = #{status},</if>
+            <if test="imCode != null">`im_code` = #{imCode},</if>
+            <if test="openId != null">`open_id` = #{openId}</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="remove">
+        delete
+        from app_mobile_user
+        where id = #{value}
+    </delete>
+
+    <delete id="batchRemove">
+        delete from app_mobile_user where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="nearByMe" resultType="com.bootdo.app.domain.MobileUserDO">
+        select *
+        from app_mobile_user
+        where
+          id != #{id}
+          and lat &gt; #{lat} - #{limit}
+          and lat &lt; #{lat} + #{limit}
+          and lon &gt; #{lon} - #{limit}
+          and lon &lt; #{lon} + #{limit}
+        order by ACOS(SIN((#{lat} * 3.1415) / 180) * SIN((lat * 3.1415) / 180) +
+                      COS((#{lat} * 3.1415) / 180) * COS((lat * 3.1415) / 180) *
+                      COS((#{lon} * 3.1415) / 180 - (lon * 3.1415) / 180)) * 6380 asc
+    </select>
+    <select id="getByPhone" resultType="com.bootdo.app.domain.MobileUserDO">
+        select `id`,
+               `head_img`,
+               `nick_name`,
+               `sex`,
+               `phone`,
+               `password`,
+               `company`,
+               `positions`,
+               `industry`,
+               `mail`,
+               `create_date`,
+               `business_card`,
+               `user_name`,
+               `id_card_num`,
+               `id_card_positive`,
+               `id_card_reverse`,
+               `real_flag`,
+               `status`,
+               `im_code`,
+               `open_id`,
+               user_from,
+               lon,
+               lat,
+               (select count(1) from app_care_me acm where acm.care_user_id = amu.id)          fans_count,
+               (select count(1) from app_video av where av.user_id = amu.id)                   video_count,
+               (select sum(av2.praises) from app_video av2 where av2.user_id = amu.id)         praises_count,
+               (select count(1) from app_vcard_floder avf where avf.receoved_user_id = amu.id) vc_card_count,
+               (select count(1) from app_care_me acm where acm.user_id =amu.id) care_count,
+               age,
+               hand_up_id_card,
+               user_sign,
+               birthday,
+               constellation
+        from app_mobile_user amu
+        where phone = #{phone}
+    </select>
+
+    <select id="getByOpenId" resultType="com.bootdo.app.domain.MobileUserDO">
+        select `id`,
+               `head_img`,
+               `nick_name`,
+               `sex`,
+               `phone`,
+               `password`,
+               `company`,
+               `positions`,
+               `industry`,
+               `mail`,
+               `create_date`,
+               `business_card`,
+               `user_name`,
+               `id_card_num`,
+               `id_card_positive`,
+               `id_card_reverse`,
+               `real_flag`,
+               `status`,
+               `im_code`,
+               `open_id`,
+               user_from,
+               lon,
+               lat,
+               user_sign,
+               (select count(1) from app_care_me acm where acm.care_user_id = amu.id)          fans_count,
+               (select count(1) from app_video av where av.user_id = amu.id)                   video_count,
+               (select sum(av2.praises) from app_video av2 where av2.user_id = amu.id)         praises_count,
+               (select count(1) from app_vcard_floder avf where avf.receoved_user_id = amu.id) vc_card_count,
+               (select count(1) from app_care_me acm where acm.user_id=amu.id) care_count,
+               (select count(1) from app_care_me acm where acm.user_id =amu.id) care_count,
+
+               age,
+               hand_up_id_card,
+               birthday,
+               constellation
+        from app_mobile_user amu
+        where open_id = #{openId}
+    </select>
+
+    <select id="userListByIdInArray" resultType="com.bootdo.app.domain.MobileUserDO">
+        select `id`,
+        `head_img`,
+        `nick_name`,
+        `sex`,
+        `phone`,
+        `password`,
+        `company`,
+        `positions`,
+        `industry`,
+        `mail`,
+        `create_date`,
+        `business_card`,
+        `user_name`,
+        `id_card_num`,
+        `id_card_positive`,
+        `id_card_reverse`,
+        `real_flag`,
+        `status`,
+        `im_code`,
+        `open_id`,
+        user_from,
+        lon,
+        lat,
+        user_sign,
+        (select count(1) from app_care_me acm where acm.care_user_id = amu.id) fans_count,
+        (select count(1) from app_video av where av.user_id=amu.id) video_count,
+        (select sum(av2.praises) from app_video av2 where av2.user_id=amu.id ) praises_count,
+        (select count(1) from app_vcard_floder avf where avf.receoved_user_id=amu.id) vc_card_count,
+        (select count(1) from app_care_me acm where acm.user_id =amu.id) care_count,
+
+        age,
+        hand_up_id_card,
+        birthday,
+        constellation
+        from app_mobile_user amu
+        where amu.id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+
+    </select>
+</mapper>

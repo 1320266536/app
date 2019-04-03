@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bootdo.app.dao.VideoDao">
+
+    <select id="get" resultType="com.bootdo.app.domain.VideoDO">
+        select `id`,
+               `user_id`,
+               `theme`,
+               `release_time`,
+               `permissions`,
+               `fileId`,
+               `praises`,
+               `comments`,
+               `share`,
+               `status`,
+               `remarks`,
+               `recommended`,
+               `re_time`,
+               `coordinates`
+        from app_video
+        where id = #{value}
+    </select>
+
+    <select id="list" resultType="com.bootdo.app.domain.VideoDO">
+        select
+        `id`,`user_id`,`theme`,`release_time`,`permissions`,`fileId`,`praises`,`comments`,`share`,`status`,`remarks`,`recommended`,`re_time`,`coordinates`
+        from app_video
+        <where>
+            <if test="id != null and id != ''">and id =
+                #{id}
+            </if>
+            <if test="userId != null and userId != ''">and user_id =
+                #{userId}
+            </if>
+            <if test="theme != null and theme != '%%'">and theme like
+                #{theme}
+            </if>
+            <if test="releaseTime != null and releaseTime != ''">and release_time =
+                #{releaseTime}
+            </if>
+            <if test="permissions != null and permissions != ''">and permissions =
+                #{permissions}
+            </if>
+            <if test="fileid != null and fileid != ''">and fileId =
+                #{fileid}
+            </if>
+            <if test="praises != null and praises != ''">and praises =
+                #{praises}
+            </if>
+            <if test="comments != null and comments != ''">and comments =
+                #{comments}
+            </if>
+            <if test="share != null and share != ''">and share =
+                #{share}
+            </if>
+            <if test="status != null and status != ''">and status =
+                #{status}
+            </if>
+            <if test="remarks != null and remarks != ''">and remarks =
+                #{remarks}
+            </if>
+            <if test="recommended != null and recommended != ''">and recommended =
+                #{recommended}
+            </if>
+            <if test="reTime != null and reTime != ''">and re_time =
+                #{reTime}
+            </if>
+            <if test="coordinates != null and coordinates != ''">and coordinates =
+                #{coordinates}
+            </if>
+            <if test="selfFlag=='0'"> and
+                id not in (select av.id from app_video av where av.user_id=#{userId} and av.permissions=1)
+            </if>
+        </where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+            <otherwise>
+                order by id desc
+            </otherwise>
+        </choose>
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <select id="count" resultType="int">
+        select count(*) from app_video
+        <where>
+            <if test="id != null and id != ''">and id =
+                #{id}
+            </if>
+            <if test="userId != null and userId != ''">and user_id =
+                #{userId}
+            </if>
+            <if test="theme != null and theme != '%%'">and theme like
+                #{theme}
+            </if>
+            <if test="releaseTime != null and releaseTime != ''">and release_time =
+                #{releaseTime}
+            </if>
+            <if test="permissions != null and permissions != ''">and permissions =
+                #{permissions}
+            </if>
+            <if test="fileid != null and fileid != ''">and fileId =
+                #{fileid}
+            </if>
+            <if test="praises != null and praises != ''">and praises =
+                #{praises}
+            </if>
+            <if test="comments != null and comments != ''">and comments =
+                #{comments}
+            </if>
+            <if test="share != null and share != ''">and share =
+                #{share}
+            </if>
+            <if test="status != null and status != ''">and status =
+                #{status}
+            </if>
+            <if test="remarks != null and remarks != ''">and remarks =
+                #{remarks}
+            </if>
+            <if test="recommended != null and recommended != ''">and recommended =
+                #{recommended}
+            </if>
+            <if test="reTime != null and reTime != ''">and re_time =
+                #{reTime}
+            </if>
+            <if test="coordinates != null and coordinates != ''">and coordinates =
+                #{coordinates}
+            </if>
+        </where>
+    </select>
+    <select id="videoList" resultType="com.bootdo.app.domain.VideoDO">
+        select *
+        from (
+        select
+        `id`,`user_id`,`theme`,`release_time`,`permissions`,`fileId`,`praises`,`comments`,`share`,`status`,`remarks`,`recommended`,`re_time`,`coordinates`
+        from app_video av
+        where av.status = 3
+        union
+        select
+        `id`,`user_id`,`theme`,`release_time`,`permissions`,`fileId`,`praises`,`comments`,`share`,`status`,`remarks`,`recommended`,`re_time`,`coordinates`
+        from app_video av2
+        where av2.status = 1
+          ) videolist
+        
+        order by videolist.re_time desc ,videolist.release_time desc
+        <if test="offset != null and limit != null">
+            limit ${offset}, ${limit}
+        </if>
+    </select>
+
+    <insert id="save" parameterType="com.bootdo.app.domain.VideoDO" useGeneratedKeys="true" keyProperty="id">
+        insert into app_video
+        (`user_id`,
+         `theme`,
+         `release_time`,
+         `permissions`,
+         `fileId`,
+         `praises`,
+         `comments`,
+         `share`,
+         `status`,
+         `remarks`,
+         `recommended`,
+         `re_time`,
+         `coordinates`)
+        values (#{userId},
+                #{theme},
+                #{releaseTime},
+                #{permissions},
+                #{fileid},
+                #{praises},
+                #{comments},
+                #{share},
+                #{status},
+                #{remarks},
+                #{recommended},
+                #{reTime},
+                #{coordinates})
+    </insert>
+
+    <update id="update" parameterType="com.bootdo.app.domain.VideoDO">
+        update app_video
+        <set>
+            <if test="userId != null">`user_id` = #{userId},</if>
+            <if test="theme != null">`theme` = #{theme},</if>
+            <if test="releaseTime != null">`release_time` = #{releaseTime},</if>
+            <if test="permissions != null">`permissions` = #{permissions},</if>
+            <if test="fileid != null">`fileId` = #{fileid},</if>
+            <if test="praises != null">`praises` = #{praises},</if>
+            <if test="comments != null">`comments` = #{comments},</if>
+            <if test="share != null">`share` = #{share},</if>
+            <if test="status != null">`status` = #{status},</if>
+            <if test="remarks != null">`remarks` = #{remarks},</if>
+            <if test="recommended != null">`recommended` = #{recommended},</if>
+            <if test="reTime != null">`re_time` = #{reTime},</if>
+            <if test="coordinates != null">`coordinates` = #{coordinates}</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="remove">
+        delete
+        from app_video
+        where id = #{value}
+    </delete>
+
+    <delete id="batchRemove">
+        delete from app_video where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

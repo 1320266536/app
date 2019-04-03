@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bootdo.app.dao.TagDictionaryDao">
+
+	<select id="get" resultType="com.bootdo.app.domain.TagDictionaryDO">
+		select `id`,`type`,`td_desc`,`status` from app_tag_dictionary where id = #{value}
+	</select>
+
+	<select id="list" resultType="com.bootdo.app.domain.TagDictionaryDO">
+		select `id`,`type`,`td_desc`,`status` from app_tag_dictionary
+        <where>
+												<if test="id != null and id != ''">and id =
+						#{id}
+					</if>
+																<if test="type != null and type != ''">and type =
+						#{type}
+					</if>
+																<if test="tdDesc != null and tdDesc != ''">and td_desc =
+						#{tdDesc}
+					</if>
+																<if test="status != null and status != ''">and status =
+						#{status}
+					</if>
+									</where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="count" resultType="int">
+		select count(*) from app_tag_dictionary
+		 <where>
+			 				 					 <if test="id != null and id != ''">and id =
+						 #{id}
+					 </if>
+				 			 				 					 <if test="type != null and type != ''">and type =
+						 #{type}
+					 </if>
+				 			 				 					 <if test="tdDesc != null and tdDesc != ''">and td_desc =
+						 #{tdDesc}
+					 </if>
+				 			 				 					 <if test="status != null and status != ''">and status =
+						 #{status}
+					 </if>
+				 			 		</where>
+	</select>
+	 
+	<insert id="save" parameterType="com.bootdo.app.domain.TagDictionaryDO" useGeneratedKeys="true" keyProperty="id">
+		insert into app_tag_dictionary
+		(
+			`type`, 
+			`td_desc`, 
+			`status`
+		)
+		values
+		(
+			#{type}, 
+			#{tdDesc}, 
+			#{status}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="com.bootdo.app.domain.TagDictionaryDO">
+		update app_tag_dictionary 
+		<set>
+			<if test="type != null">`type` = #{type}, </if>
+			<if test="tdDesc != null">`td_desc` = #{tdDesc}, </if>
+			<if test="status != null">`status` = #{status}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="remove">
+		delete from app_tag_dictionary where id = #{value}
+	</delete>
+	
+	<delete id="batchRemove">
+		delete from app_tag_dictionary where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>

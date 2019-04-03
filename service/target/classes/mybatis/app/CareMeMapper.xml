@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bootdo.app.dao.CareMeDao">
+
+    <select id="get" resultType="com.bootdo.app.domain.CareMeDO">
+		select `id`,`user_id`,`care_user_id`,`create_date` from app_care_me where id = #{value}
+	</select>
+
+    <select id="list" resultType="com.bootdo.app.domain.CareMeDO">
+        select `id`,`user_id`,`care_user_id`,`create_date` from app_care_me
+        
+        <where>
+            <if test="id != null and id != ''">and id =
+                #{id}
+            </if>
+            <if test="userId != null and userId != ''">and user_id =
+                #{userId}
+            </if>
+            <if test="fansUserName != null and fansUserName != '%%'">and
+                user_id in ( select amu.id
+                from app_mobile_user amu where nick_name like #{userName})
+            </if>
+            <if test="iCareUserName != null and iCareUserName != '%%'">and
+                care_user_id in ( select amu.id
+                from app_mobile_user amu where nick_name like #{userName})
+            </if>
+            <if test="careUserId != null and careUserId != ''">and care_user_id =
+                #{careUserId}
+            </if>
+            <if test="createDate != null and createDate != ''">and create_date =
+                #{createDate}
+            </if>
+        </where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+            <otherwise>
+                order by id desc
+            </otherwise>
+        </choose>
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <select id="count" resultType="int">
+        select count(*) from app_care_me
+        <where>
+            <if test="id != null and id != ''">and id =
+                #{id}
+            </if>
+            <if test="userId != null and userId != ''">and user_id =
+                #{userId}
+            </if>
+            <if test="careUserId != null and careUserId != ''">and care_user_id =
+                #{careUserId}
+            </if>
+            <if test="createDate != null and createDate != ''">and create_date =
+                #{createDate}
+            </if>
+        </where>
+    </select>
+
+    <select id="isCare" resultType="int">
+        select count(*) from app_care_me
+        where user_id = #{userId} and care_user_id = #{careUserId}
+    </select>
+
+    <select id="isHisCare" resultType="int">
+        select count(*) from app_care_me
+        where user_id = #{careUserId} and care_user_id = #{userId}
+    </select>
+
+    <insert id="save" parameterType="com.bootdo.app.domain.CareMeDO" useGeneratedKeys="true" keyProperty="id">
+		insert into app_care_me
+		(
+			`user_id`, 
+			`care_user_id`, 
+			`create_date`
+		)
+		values
+		(
+			#{userId}, 
+			#{careUserId}, 
+			#{createDate}
+		)
+	</insert>
+
+    <update id="update" parameterType="com.bootdo.app.domain.CareMeDO">
+        update app_care_me
+        <set>
+            <if test="userId != null">`user_id` = #{userId},</if>
+            <if test="careUserId != null">`care_user_id` = #{careUserId},</if>
+            <if test="createDate != null">`create_date` = #{createDate}</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="remove">
+		delete from app_care_me where id = #{value}
+	</delete>
+
+    <delete id="batchRemove">
+        delete from app_care_me where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    <delete id="delLink">
+        delete  from app_care_me where user_id=#{userId} and care_user_id=#{careUserId};
+
+    </delete>
+
+</mapper>
